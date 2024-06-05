@@ -1,65 +1,89 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Content;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $contents = Content::all();
-        return Inertia::render('Contents/Index', compact('contents'));
+        return Inertia::render('Contents/Index', [
+            'contents' => Content::all(),
+        ]);
     }
 
     public function create(): Response
     {
-        return Inertia::render('Contents/Create');
+        return Inertia::render('Contents/Create', [
+            'categories' => Category::all(), // Passando as categorias para o formulário
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
-            'img' => 'nullable|string',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validando o campo de imagem
         ]);
 
-        Content::create($request->all());
+        if ($request->hasFile('img')) {
+            $filePath = $request->file('img')->store('images', 'public'); // Salvando a imagem no storage
+            $validatedData['img'] = $filePath;
+        }
 
-        return redirect()->route('contents.index')
-            ->with('success', 'Content created successfully.');
+        Content::create($validatedData);
+
+        return redirect()->route('contents.index')->with('success', 'Content created successfully.');
     }
 
     public function edit(Content $content): Response
     {
-        return Inertia::render('Contents/Edit', compact('content'));
+        return Inertia::render('Contents/Edit', [
+            'content' => $content,
+        ]);
     }
 
     public function update(Request $request, Content $content): RedirectResponse
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
-            'img' => 'nullable|string',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validando o campo de imagem
         ]);
 
-        $content->update($request->all());
+        if ($request->hasFile('img')) {
+            // Deletando a imagem antiga, se houver
+            if ($content->img) {
+                Storage::disk('public')->delete($content->img);
+            }
+            $filePath = $request->file('img')->store('images', 'public'); // Salvando a nova imagem
+            $validatedData['img'] = $filePath;
+        }
 
-        return redirect()->route('contents.index')
-            ->with('success', 'Content updated successfully.');
+        $content->update($validatedData);
+
+        return redirect()->route('contents.index')->with('success', 'Content updated successfully.');
     }
 
-    public function destroy(Content $content): RedirectResponse
+    public function delete(Request $request): RedirectResponse
     {
+        $content = Content::findOrFail($request->content);
+        
+        if ($content->img) {
+            Storage::disk('public')->delete($content->img);
+        }
+
         $content->delete();
 
-        return redirect()->route('contents.index')
-            ->with('success', 'Content deleted successfully.');
+        return redirect()->route('contents.index')->with('success', 'Content deleted successfully.');
     }
 }

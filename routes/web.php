@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::post('/categories/store', [CategoryController::class, 'store'])->name('categories.store');
     Route::delete('/categories/{category}/delete', [CategoryController::class, 'delete'])->name('categories.delete');
+    Route::put('/categories/{category}/update', [CategoryController::class, 'update'])->name('categories.update');
+
     // Content CRUD routes
     Route::get('/contents', [ContentController::class, 'index'])->name('contents.index');
     Route::get('/contents/create', [ContentController::class, 'create'])->name('contents.create');

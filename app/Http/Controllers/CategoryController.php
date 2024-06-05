@@ -12,8 +12,9 @@ class CategoryController extends Controller
 {
     public function index(Request $request): Response
     {
+        $categories = Category::paginate(10);
         return Inertia::render('Categories/Index', [
-            'categories' => Category::all(),
+            'categories' => $categories,
         ]);
     }
 
@@ -27,11 +28,13 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'desc' => 'nullable|string',
+            'status' => 'boolean',
         ]);
-
+        
         Category::create([
             'name' => $request->input('name'),
             'desc' => $request->input('desc'),
+            'status' => $request->input('status'),
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Category created successfully.');
@@ -49,11 +52,13 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'desc' => 'nullable|string',
+            'status' => 'boolean',
         ]);
-
+    
         $category->update([
             'name' => $request->input('name'),
             'desc' => $request->input('desc'),
+            'status' => $request->input('status'),
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
