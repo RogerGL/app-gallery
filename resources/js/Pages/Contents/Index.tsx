@@ -86,6 +86,11 @@ export default function Index({ auth, contents }) {
                                                             Descrição
                                                         </span>
                                                     </th>
+                                                    <th scope="col" className=" text-xs font-semibold tracking-wider text-left text-white uppercase">
+                                                        <span className="inline-flex py-3 px-6 w-full justify-center">
+                                                            Categoria
+                                                        </span>
+                                                    </th>
                                                     <th scope="col" className=" text-xs font-semibold tracking-wider text-center text-white uppercase">
                                                         <span className="inline-flex py-3 px-6 w-full justify-center">
                                                             Imagem
@@ -110,11 +115,16 @@ export default function Index({ auth, contents }) {
                                                         <td className="py-4 px-6 whitespace-nowrap text-center">
                                                             {content.description}
                                                         </td>
+                                                        <td className="py-4 px-6 whitespace-nowrap text-center">
+                                                            {content.category_id}
+                                                        </td>
                                                         <td className="py-4 px-6 whitespace-nowrap text-center flex justify-center">
+                                                        <a href={`/storage/${content.img}`} target="_blank" rel="noopener noreferrer" className="w-4/6 h-20">
                                                             <img
                                                                 src={`/storage/${content.img}`}
-                                                                className="w-4/6 h-20"
+                                                                className="w-5/6 h-20"
                                                             />
+                                                        </a>
                                                         </td>
                                                         <td className="py-4 px-6 whitespace-nowrap text-center">
                                                             <Link href={route('contents.edit', { content: content.id })} className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded">
