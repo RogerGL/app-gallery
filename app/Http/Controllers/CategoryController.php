@@ -24,21 +24,24 @@ class CategoryController extends Controller
     }
 
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'desc' => 'nullable|string',
-            'status' => 'boolean',
-        ]);
-        
-        Category::create([
-            'name' => $request->input('name'),
-            'desc' => $request->input('desc'),
-            'status' => $request->input('status'),
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'desc' => 'nullable|string',
+        'status' => 'boolean',
+        'eventDate' => 'required|date', // Corrigido para nullable|date
+    ]);
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
-    }
+    Category::create([
+        'name' => $request->input('name'),
+        'desc' => $request->input('desc'),
+        'status' => $request->input('status'),
+        'event_date' => $request->input('eventDate'), // Ajustado para eventDate
+    ]);
+
+    return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+}
+
 
     public function edit(Category $category): Response
     {
@@ -53,12 +56,14 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'desc' => 'nullable|string',
             'status' => 'boolean',
+            'event_date' => 'required|date', 
         ]);
     
         $category->update([
             'name' => $request->input('name'),
             'desc' => $request->input('desc'),
             'status' => $request->input('status'),
+            'event_date' => $request->input('event_date'),
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');

@@ -13,6 +13,7 @@ class Category extends Model
         'name',
         'desc',
         'status',
+        'event_date',
         'created_at',
         'updated_at',
         'deleted_at',

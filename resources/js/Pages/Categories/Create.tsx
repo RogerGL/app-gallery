@@ -14,6 +14,7 @@ export default function Create({ auth, category }) {
         name: '',
         desc: '',
         status: false, // inicializa o status como falso (desativado)
+        eventDate: '', // define a data do evento atual
     });
 
     const [status, setStatus] = useState(data.status); // Use o estado local para controlar o Switch
@@ -33,7 +34,7 @@ export default function Create({ auth, category }) {
             <Toaster richColors position="top-right" />
             <header className="bg-white shadow">
                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 font-bold">
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">Users Edit</h2>
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">Criação de Categoria</h2>
                 </div>
             </header>
 
@@ -59,19 +60,28 @@ export default function Create({ auth, category }) {
                                 <textarea id="desc"
                                     value={data.desc}
                                     onChange={(e) => setData('desc', e.target.value)}
-                                    className="resize-none rounded-md"
+                                    className="resize-none rounded-md block w-full"
                                     autoComplete="desc"
                                 ></textarea>
                             </div>
                             
-                           
+                            <div className="mt-4">
+                                <InputLabel htmlFor="eventDate" value="Event Date" />
+                                <input
+                                    id="eventDate"
+                                    value={data.eventDate}
+                                    onChange={(e) => setData('eventDate', e.target.value)}
+                                    type="date"
+                                    className="mt-1 block w-full"
+                                />
+                                 {errors.eventDate && <div className="mt-2 text-red-500">{errors.eventDate}</div>}
+                            </div>
   
                             <div className="mt-4">
                               <InputLabel htmlFor="status" value="Status" />
                                 <Switch.Root
                                     checked={status}
                                     onCheckedChange={(isChecked) => {
-                                      console.log('Switch isChecked:', isChecked);
                                       setStatus(isChecked);
                                   }}
                                     className="data-[state=checked]:bg-slate-900 w-11 rounded-full bg-gray-500 p-px shadow-inner shadow-black/50 transition active:bg-gray-700"

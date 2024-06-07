@@ -41,7 +41,7 @@ export default function Authenticated({ user, header, children }: PropsWithChild
                                     </NavLink>
                                   </>
                                 )}
-                                {isModUser && (
+                                {isAdminUser && (
                                     <NavLink href={route('categories.index')} active={route().current('categories.index')}>
                                         Usuários
                                     </NavLink>
@@ -118,6 +118,16 @@ export default function Authenticated({ user, header, children }: PropsWithChild
                         <ResponsiveNavLink href={route('events.index')} active={route().current('events.index')}>
                             Eventos
                         </ResponsiveNavLink>
+                        {isModUser && (
+                            <>
+                                <ResponsiveNavLink href={route('contents.index')} active={route().current('contents.index')}>
+                                    Conteúdos
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink href={route('categories.index')} active={route().current('categories.index')}>
+                                    Categorias
+                                </ResponsiveNavLink>
+                            </>
+                        )}
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
