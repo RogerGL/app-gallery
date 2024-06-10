@@ -75,4 +75,12 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
     }
+    public function toggleContent(Category $category)
+        {
+            $category->has_content = !$category->has_content;
+            $category->save();
+        
+            return response()->json(['success' => true, 'has_content' => $category->has_content]);
+        }
+
 }

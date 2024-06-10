@@ -1,15 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import DangerButton from '@/Components/DangerButton';
 import Modal from '@/Components/Modal';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
-import { X, CircleCheck, CircleSlash, Rocket, PencilLine, Eraser, BookImage, PlusCircle } from "lucide-react";
+import { X, PencilLine, Eraser, BookImage, PlusCircle } from "lucide-react";
 import DataTable from 'react-data-table-component';
-import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 export default function Index({ auth, categories }) {
     const [confirmingCategoryDeletion, setConfirmingCategoryDeletion] = useState(false);
@@ -17,7 +15,7 @@ export default function Index({ auth, categories }) {
     const [filterEventDate, setFilterEventDate] = useState('');
     const categoryId = useRef(null);
 
-    const { setData, delete: destroy, processing, reset, errors } = useForm();
+    const { setData, delete: destroy, processing, reset } = useForm();
 
     const confirmCategoryDelete = (id) => {
         setConfirmingCategoryDeletion(true);
@@ -64,10 +62,9 @@ export default function Index({ auth, categories }) {
         },
     };
 
-    // Filtrar categorias
     const filteredCategories = categories.data.filter(
         category =>
-            (filterText === '' || category.id.toString().includes(filterText.toLowerCase()) ||  category.name.toLowerCase().includes(filterText.toLowerCase()) || category.desc.toLowerCase().includes(filterText.toLowerCase())) &&
+            (filterText === '' || category.id.toString().includes(filterText.toLowerCase()) || category.name.toLowerCase().includes(filterText.toLowerCase()) || category.desc.toLowerCase().includes(filterText.toLowerCase())) &&
             (filterEventDate === '' || category.event_date.includes(filterEventDate))
     );
 
@@ -80,6 +77,23 @@ export default function Index({ auth, categories }) {
         window.location.href = route('contents.create', { category: categoryId });
     };
 
+    const toggleContent = (categoryId) => {
+        axios.patch(route('categories.toggleContent', { category: categoryId }))
+            .then(response => {
+                const updatedCategories = categories.data.map(category => {
+                    if (category.id === categoryId) {
+                        return { ...category, has_content: response.data.has_content };
+                    }
+                    return category;
+                });
+                window.location.href = route('categories.index');
+                setData('categories', { ...categories, data: updatedCategories });
+            })
+            .catch(error => {
+                console.error('Error updating content state:', error);
+            });
+    };
+
     return (
         <AuthenticatedLayout user={auth.user}>
             <header className="bg-white shadow">
@@ -89,17 +103,17 @@ export default function Index({ auth, categories }) {
             </header>
 
             <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl sm:px-6 lg:px-1">
                     <div className='flex justify-between'>
-                    <Link
-                        href={route('categories.create')}
-                        className="inline-flex items-center my-4 px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                    >
-                        Criar Categoria
-                    </Link>
-
+                        <div className='max-w-7xl sm:px-6 lg:px-1'>
+                            <Link
+                                href={route('categories.create')}
+                                className="inline-flex items-center my-4 px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:bg-green-700 active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                            >
+                                Criar Categoria
+                            </Link>
+                        </div>
                         <div className="mb-4 grid col grid-cols-1 md:grid-cols-3 gap-4">
-
                             <TextInput
                                 id="filterText"
                                 value={filterText}
@@ -130,33 +144,43 @@ export default function Index({ auth, categories }) {
                                                     { name: 'Descrição', selector: row => row.desc, sortable: true, },
                                                     { name: 'Data do Evento', selector: row => row.event_date, sortable: true, },
                                                     {
+                                                        name: 'Conteúdo Permitido',
+                                                        cell: row => (
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={row.has_content}
+                                                                onChange={() => toggleContent(row.id)}
+                                                            />
+                                                        ),
+                                                    },
+                                                    {
                                                         name: 'Ações',
                                                         cell: row => (
-                                                            <div className="flex space-x-1">
-                                                                <Link
-                                                                    href={route('categories.edit', { category: row.id })}
-                                                                    className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded"
+                                                            <div className=" space-x-1">
+                                                                <button
+                                                                    onClick={() => window.location.href = route('categories.edit', { category: row.id })}
+                                                                    className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-1.5 px-1.5 rounded"
                                                                 >
                                                                     <PencilLine />
-                                                                </Link>
-                                                                <DangerButton
-                                                                    className="ms-3"
+                                                                </button>
+                                                                <button
+                                                                    className="bg-red-700 hover:bg-red-900 text-white font-bold py-1.5 px-1.5 rounded"
                                                                     onClick={() => confirmCategoryDelete(row.id)}
                                                                 >
-                                                                   <Eraser /> 
-                                                                </DangerButton>
-                                                                <SecondaryButton
-                                                                    className="ms-3"
+                                                                    <Eraser />
+                                                                </button>
+                                                                <button
+                                                                    className="bg-amber-700 hover:bg-amber-900 text-white font-bold py-1.5 px-1.5 rounded"
                                                                     onClick={() => redirectToGallery(row.id)}
                                                                 >
                                                                     <BookImage />
-                                                                </SecondaryButton>
-                                                                <SecondaryButton
-                                                                    className="ms-3"
+                                                                </button>
+                                                                <button
+                                                                    className="bg-green-700 hover:bg-green-900 text-white font-bold py-1.5 px-1.5 rounded"
                                                                     onClick={() => redirectToCreateContent(row.id)}
                                                                 >
                                                                     <PlusCircle />
-                                                                </SecondaryButton>
+                                                                </button>
                                                             </div>
                                                         ),
                                                     },
