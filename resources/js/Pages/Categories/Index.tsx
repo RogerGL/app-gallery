@@ -7,8 +7,9 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
-import { X, CircleCheck, CircleSlash, Rocket, PencilLine, Eraser, BookImage } from "lucide-react";
+import { X, CircleCheck, CircleSlash, Rocket, PencilLine, Eraser, BookImage, PlusCircle } from "lucide-react";
 import DataTable from 'react-data-table-component';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Index({ auth, categories }) {
     const [confirmingCategoryDeletion, setConfirmingCategoryDeletion] = useState(false);
@@ -71,7 +72,12 @@ export default function Index({ auth, categories }) {
     );
 
     const redirectToGallery = (categoryId) => {
-        window.location.href = route('events.show', { event: categoryId });
+        const uuid = uuidv4();
+        window.location.href = route('events.show', { event: `${uuid}-${categoryId}` });
+    };
+
+    const redirectToCreateContent = (categoryId) => {
+        window.location.href = route('contents.create', { category: categoryId });
     };
 
     return (
@@ -144,6 +150,12 @@ export default function Index({ auth, categories }) {
                                                                     onClick={() => redirectToGallery(row.id)}
                                                                 >
                                                                     <BookImage />
+                                                                </SecondaryButton>
+                                                                <SecondaryButton
+                                                                    className="ms-3"
+                                                                    onClick={() => redirectToCreateContent(row.id)}
+                                                                >
+                                                                    <PlusCircle />
                                                                 </SecondaryButton>
                                                             </div>
                                                         ),

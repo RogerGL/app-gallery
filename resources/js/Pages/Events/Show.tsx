@@ -29,7 +29,7 @@ export default function Show({ auth, event_images, events }) {
       <AuthenticatedLayout user={auth.user}>
           <header className="bg-white shadow">
               <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                  <h2 className="font-semibold text-xl text-gray-800 leading-tight">Evento {events[0].name}</h2>
+                  <h2 className="font-semibold text-xl text-gray-800 leading-tight">Evento </h2>
               </div>
           </header>
 

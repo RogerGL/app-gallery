@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
     //Event view
     Route::get('/events', [EventController::class, 'index'])->name('events.index')->middleware(CheckUserLevel::class.':1');
     Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+    
 
 });
 
