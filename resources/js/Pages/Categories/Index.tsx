@@ -8,6 +8,7 @@ import TextInput from '@/Components/TextInput';
 import { X, PencilLine, Eraser, BookImage, PlusCircle } from "lucide-react";
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Index({ auth, categories }) {
     const [confirmingCategoryDeletion, setConfirmingCategoryDeletion] = useState(false);

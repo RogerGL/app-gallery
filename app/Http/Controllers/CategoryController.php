@@ -52,18 +52,17 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category): RedirectResponse
     {
+       
         $request->validate([
             'name' => 'required|string|max:255',
             'desc' => 'nullable|string',
             'status' => 'boolean',
-            'event_date' => 'required|date', 
         ]);
-    
+
         $category->update([
             'name' => $request->input('name'),
             'desc' => $request->input('desc'),
             'status' => $request->input('status'),
-            'event_date' => $request->input('event_date'),
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');

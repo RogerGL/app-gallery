@@ -22,10 +22,15 @@ class ContentController extends Controller
 {
     $categories = Category::all();
     $contents = Content::all();
+    $existingContent = $contents->first(function ($content) use ($request) {
+        return $content->user_id === auth()->id() && $content->category_id == $request->category;
+    });
+
     return Inertia::render('Contents/Create', [
         'categories' => $categories,
         'contents' => $contents,
         'predefinedCategoryId' => $request->category,
+        'existingContent' => $existingContent,
     ]);
 }
 
@@ -58,28 +63,34 @@ class ContentController extends Controller
     }
 
     public function update(Request $request, Content $content): RedirectResponse
-    {
+{
+    // Validação dos dados
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'category_id' => 'required|exists:categories,id',
+        'description' => 'nullable|string',
+        'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validação da imagem
+    ]);
+
+    // Verificação e upload da imagem
+    if ($request->hasFile('img')) {
         
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string',
-            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validando o campo de imagem
-        ]);
-        
-        if ($request->hasFile('img')) {
-            // Deletando a imagem antiga, se houver
-            if ($content->img) {
-                Storage::disk('public')->delete($content->img);
-            }
-            $filePath = $request->file('img')->store('images', 'public'); // Salvando a nova imagem
-            $validatedData['img'] = $filePath;
+        // Deletando a imagem antiga, se houver
+        if ($content->img) {
+            Storage::disk('public')->delete($content->img);
         }
-       
-        $content->update($validatedData);
-       
-        return redirect()->route('contents.index')->with('success', 'Content updated successfully.');
+
+        // Salvando a nova imagem e adicionando ao array de dados validados
+        $filePath = $request->file('img')->store('images', 'public');
+        $validatedData['img'] = $filePath;
     }
+
+    // Atualizando o conteúdo com os dados validados
+    $content->update($validatedData);
+
+    // Redirecionando com uma mensagem de sucesso
+    return redirect()->route('contents.index')->with('success', 'Content updated successfully.');
+}
 
     public function delete(Request $request): RedirectResponse
     {

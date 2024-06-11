@@ -7,34 +7,47 @@ import { Link, useForm, usePage } from '@inertiajs/react';
 import { Toaster, toast } from 'sonner';
 import { Inertia } from '@inertiajs/inertia';
 
-export default function Create({ auth, categories = [], predefinedCategoryId = '', contents = [] }) {
+export default function Create({ auth, categories = [], predefinedCategoryId = '', contents = [], existingContent= {} }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         description: '',
-        category_id: predefinedCategoryId || '',
+        category_id: predefinedCategoryId || null,
         img: null,
     });
-
-    const submit = async (e) => {
+    console.log(data.img)
+    const submit =  (e) => {
         e.preventDefault();
-
-        const categoryId = parseInt(data.category_id, 10); // Convertendo para número
+        
+        const categoryId = parseInt(data.category_id, 10);
         const selectedCategory = categories.find(category => category.id === categoryId);
-
+    
         if (!selectedCategory || !selectedCategory.has_content) {
             toast.error('Não é permitido enviar uma foto para este evento');
             return;
         }
-
-        const existingContent = contents.find(content => content.user_id === auth.user.id && content.category_id == predefinedCategoryId);
-        console.log(setData)
-        if(existingContent != null){
-            Inertia.put(route('contents.update', existingContent.id), data, {
+       
+        //const existingContent = contents.find(content => content.user_id === auth.user.id && content.category_id == predefinedCategoryId);
+        
+        if (existingContent != null) {
+            
+            const newData = {
+                name:  data.name,
+                description: data.description,
+                category_id:  existingContent.category_id,
+                img: 'existingContent.img', 
+            };
+            
+            Inertia.put(route('contents.update', existingContent.id), newData, {
+                preserveScroll: true,
                 onSuccess: () => {
-                    console.log(data);
+                    reset();
                 },
+                onError: () => {
+                    toast.error('Erro ao atualizar o conteúdo.');
+                }
             });
-        }else{
+        }
+         else {
             post(route('contents.store'), {
                 preserveScroll: true,
                 onSuccess: () => reset(),
@@ -43,9 +56,8 @@ export default function Create({ auth, categories = [], predefinedCategoryId = '
                 }
             });
         }
-            
-        
     };
+    
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -59,7 +71,7 @@ export default function Create({ auth, categories = [], predefinedCategoryId = '
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <form onSubmit={submit} encType="multipart/form-data">
+                        <form onSubmit={submit } >
                             <div className="mt-4">
                                 <InputLabel htmlFor="name" value="Name" />
                                 <TextInput
@@ -79,7 +91,7 @@ export default function Create({ auth, categories = [], predefinedCategoryId = '
                                     value={data.category_id}
                                     onChange={(e) => setData('category_id', e.target.value)}
                                     className="mt-1 block w-full"
-                                    disabled={predefinedCategoryId !== ''}
+                                    disabled={predefinedCategoryId != null}
                                 >
                                     <option value="">Select a category</option>
                                     {categories.map((category) => (
@@ -111,6 +123,7 @@ export default function Create({ auth, categories = [], predefinedCategoryId = '
                                     onChange={(e) => setData('img', e.target.files[0])}
                                     className="mt-1 block w-full"
                                 />
+                                 {errors.name && <div className="mt-2 text-red-500">{errors.name}</div>}
                             </div>
 
                             <div className="flex items-center justify-end mt-4">
