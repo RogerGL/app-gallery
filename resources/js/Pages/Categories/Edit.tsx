@@ -12,6 +12,7 @@ export default function Edit({ auth, category }) {
         name: category.name,
         desc: category.desc,
         status: category.status,
+        eventDate: category.event_date
     });
 
     const [status, setStatus] = useState(data.status);
@@ -70,7 +71,17 @@ export default function Edit({ auth, category }) {
                               <Switch.Thumb className="data-[state=checked]:translate-x-[18px] data-[state=checked]:bg-white block h-6 w-6 rounded-full bg-gray-200 shadow-sm transition" />
                           </Switch.Root>
                       </div>
-
+                      <div className="mt-4">
+                                <InputLabel htmlFor="eventDate" value="Event Date" />
+                                <input
+                                    id="eventDate"
+                                    value={data.eventDate}
+                                    onChange={(e) => setData('eventDate', e.target.value)}
+                                    type="date"
+                                    className="mt-1 block w-full"
+                                />
+                                 {errors.eventDate && <div className="mt-2 text-red-500">{errors.eventDate}</div>}
+                            </div>
                       <div className="flex items-center justify-end mt-4">
                           <PrimaryButton className="ml-4" disabled={processing}>
                               Editar

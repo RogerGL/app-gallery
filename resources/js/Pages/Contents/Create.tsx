@@ -14,7 +14,7 @@ export default function Create({ auth, categories = [], predefinedCategoryId = '
         category_id: predefinedCategoryId || null,
         img: null,
     });
-    console.log(data.img)
+    
     const submit =  (e) => {
         e.preventDefault();
         
@@ -25,19 +25,26 @@ export default function Create({ auth, categories = [], predefinedCategoryId = '
             toast.error('Não é permitido enviar uma foto para este evento');
             return;
         }
-       
-        //const existingContent = contents.find(content => content.user_id === auth.user.id && content.category_id == predefinedCategoryId);
         
+       
+        console.log(existingContent)
         if (existingContent != null) {
             
             const newData = {
                 name:  data.name,
                 description: data.description,
                 category_id:  existingContent.category_id,
-                img: 'existingContent.img', 
+                img: data.img, 
             };
             
-            Inertia.put(route('contents.update', existingContent.id), newData, {
+           
+            Inertia.post(route('contents.update', existingContent.id), {
+                _method: "put",
+                name: newData.name,
+                description: newData.description,
+                category_id: newData.category_id,
+                img: newData.img,
+            }, {
                 preserveScroll: true,
                 onSuccess: () => {
                     reset();

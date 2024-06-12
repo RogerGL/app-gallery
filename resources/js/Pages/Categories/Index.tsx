@@ -46,9 +46,14 @@ export default function Index({ auth, categories }) {
         },
         headCells: {
             style: {
-                padding: '12px 24px',
                 fontWeight: 'bold',
+                justifyContent: 'center',
             },
+        },
+        cells:{
+                style:{
+                    justifyContent: 'center',
+                }
         },
         rows: {
             style: {
@@ -62,10 +67,10 @@ export default function Index({ auth, categories }) {
             },
         },
     };
-
+    console.log(categories.data)
     const filteredCategories = categories.data.filter(
         category =>
-            (filterText === '' || category.id.toString().includes(filterText.toLowerCase()) || category.name.toLowerCase().includes(filterText.toLowerCase()) || category.desc.toLowerCase().includes(filterText.toLowerCase())) &&
+            (filterText === '' || category.id.toString().includes(filterText.toLowerCase()) || category.name.toLowerCase().includes(filterText.toLowerCase())) &&
             (filterEventDate === '' || category.event_date.includes(filterEventDate))
     );
 
@@ -99,7 +104,7 @@ export default function Index({ auth, categories }) {
         <AuthenticatedLayout user={auth.user}>
             <header className="bg-white shadow">
                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">Categorias</h2>
+                    <h2 className="font-semibold text-xl text-white leading-tight">Categorias</h2>
                 </div>
             </header>
 
@@ -119,7 +124,7 @@ export default function Index({ auth, categories }) {
                                 id="filterText"
                                 value={filterText}
                                 onChange={(e) => setFilterText(e.target.value)}
-                                placeholder="Filtrar por Id, Nome ou Descrição..."
+                                placeholder="Filtrar por Id, Nome"
                                 className="mt-1 block w-full "
                             />
                             <TextInput
@@ -142,7 +147,7 @@ export default function Index({ auth, categories }) {
                                                 columns={[
                                                     { name: 'Id', selector: row => row.id, sortable: true, },
                                                     { name: 'Nome', selector: row => row.name, sortable: true, },
-                                                    { name: 'Descrição', selector: row => row.desc, sortable: true, },
+                                                    //{ name: 'Descrição', selector: row => row.desc, sortable: true, },
                                                     { name: 'Data do Evento', selector: row => row.event_date, sortable: true, },
                                                     {
                                                         name: 'Conteúdo Permitido',

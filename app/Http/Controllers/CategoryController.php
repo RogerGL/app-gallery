@@ -57,12 +57,14 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'desc' => 'nullable|string',
             'status' => 'boolean',
+            'eventDate' => 'required|date',
         ]);
 
         $category->update([
             'name' => $request->input('name'),
             'desc' => $request->input('desc'),
             'status' => $request->input('status'),
+            'event_date' => $request->input('eventDate'),
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');

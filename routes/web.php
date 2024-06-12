@@ -19,9 +19,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -41,7 +39,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/contents', [ContentController::class, 'index'])->name('contents.index')->middleware(CheckUserLevel::class.':2');
     Route::get('/contents/create', [ContentController::class, 'create'])->name('contents.create')->middleware(CheckUserLevel::class.':2');
-    Route::put('/contents/{content}/update', [ContentController::class, 'update'])->name('contents.update')->middleware(CheckUserLevel::class.':2');
+    Route::put('/contents/{content}', [ContentController::class, 'update'])->name('contents.update')->middleware(CheckUserLevel::class.':2');
+
     Route::get('/contents/{content}/edit', [ContentController::class, 'edit'])->name('contents.edit')->middleware(CheckUserLevel::class.':2');
     Route::post('/contents/store', [ContentController::class, 'store'])->name('contents.store')->middleware(CheckUserLevel::class.':2');
     Route::delete('/contents/{content}/delete', [ContentController::class, 'delete'])->name('contents.delete')->middleware(CheckUserLevel::class.':2');
