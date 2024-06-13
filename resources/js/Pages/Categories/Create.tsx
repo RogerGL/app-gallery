@@ -32,9 +32,9 @@ export default function Create({ auth, category }) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Toaster richColors position="top-right" />
-            <header className="bg-white shadow">
+            <header className="bg-slate-900 shadow">
                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 font-bold">
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">Criação de Categoria</h2>
+                    <h2 className="font-semibold text-xl text-white leading-tight">Criação de Categoria</h2>
                 </div>
             </header>
 

@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-        return redirect()->intended(route('/profile', absolute: false));
+        return redirect()->intended(route('home', absolute: false));
     }
 
     /**
@@ -46,6 +46,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/profile');
+        return redirect('home');
     }
 }

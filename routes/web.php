@@ -9,8 +9,9 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::redirect('/', '/home');
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Dashboard', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
@@ -19,7 +20,9 @@ Route::get('/', function () {
 });
 
 
-
+Route::get('/home', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('home');
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -38,8 +41,8 @@ Route::middleware('auth')->group(function () {
     // Content CRUD routes
 
     Route::get('/contents', [ContentController::class, 'index'])->name('contents.index')->middleware(CheckUserLevel::class.':2');
-    Route::get('/contents/create', [ContentController::class, 'create'])->name('contents.create')->middleware(CheckUserLevel::class.':2');
-    Route::put('/contents/{content}', [ContentController::class, 'update'])->name('contents.update')->middleware(CheckUserLevel::class.':2');
+    Route::get('/contents/create', [ContentController::class, 'create'])->name('contents.create');
+    Route::put('/contents/{content}', [ContentController::class, 'update'])->name('contents.update');
 
     Route::get('/contents/{content}/edit', [ContentController::class, 'edit'])->name('contents.edit')->middleware(CheckUserLevel::class.':2');
     Route::post('/contents/store', [ContentController::class, 'store'])->name('contents.store')->middleware(CheckUserLevel::class.':2');

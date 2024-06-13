@@ -30,9 +30,9 @@ export default function Edit({ auth, category }) {
 
     return (
         <AuthenticatedLayout user={auth.user}>
-            <header className="bg-white shadow">
+            <header className="bg-slate-900 shadow">
                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 font-bold">
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">Categories Edit</h2>
+                    <h2 className="font-semibold text-xl text-white leading-tight">Categories Edit</h2>
                 </div>
             </header>
 

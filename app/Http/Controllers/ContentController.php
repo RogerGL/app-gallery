@@ -23,58 +23,66 @@ class ContentController extends Controller
     public function create(Request $request): Response
 {
     $categories = Category::all();
-    $contents = Content::all();
+    $contents = Content::where('user_id', auth()->id())->get();
     $existingContent = $contents->first(function ($content) use ($request) {
         return $content->user_id === auth()->id() && $content->category_id == $request->category;
     });
+
+    $user = auth()->user();
+    $userLevel = $user->level;
+
+   
+    if ($existingContent && $userLevel !== 1) {
+        $existingContent = null;
+    }
 
     return Inertia::render('Contents/Create', [
         'categories' => $categories,
         'contents' => $contents,
         'predefinedCategoryId' => $request->category,
         'existingContent' => $existingContent,
+        'auth' => [
+            'user' => $user,
+            'level' => $userLevel,
+        ],
     ]);
 }
 
-    public function store(Request $request): RedirectResponse
-    {
-        \Log::info('Dados recebidos para atualização', $request->all());
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string',
-            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:1048', // Validando o campo de imagem
-        ]);
-        \Log::info('Dados validados', $validatedData);
-        if ($request->hasFile('img')) {
-            $filePath = $request->file('img')->store('images', 'public'); // Salvando a imagem no storage
-            $validatedData['img'] = $filePath;
-            \Log::info('Imagem recebida para upload');
-        }
-        $content = new Content();
-        $content->fill($validatedData);
-        $content->user_id = auth()->id();
-        $content->save();
+public function store(Request $request): RedirectResponse
+{
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'category_id' => 'required|exists:categories,id',
+        'description' => 'nullable|string',
+        'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:1048', // Validando o campo de imagem
+    ]);
 
-        return redirect()->route('contents.index')->with('success', 'Content created successfully.');
+    if ($request->hasFile('img')) {
+        $filePath = $request->file('img')->store('images', 'public'); // Salvando a imagem no storage
+        $validatedData['img'] = $filePath;
     }
 
-    public function edit(Content $content): Response
-{
-        $categories = Category::all();
+    $content = new Content();
+    $content->fill($validatedData);
+    $content->user_id = auth()->id();
+    $content->save();
 
-        return Inertia::render('Contents/Edit', [
-            'categories' => $categories,
-            'content' => $content,
-        ]);
+    return redirect()->route('home')->with('success', 'Content created successfully.');
 }
 
+public function edit(Content $content): Response
+{
+    $categories = Category::all();
+
+    return Inertia::render('Contents/Edit', [
+        'categories' => $categories,
+        'content' => $content,
+    ]);
+}
 
 public function update(Request $request, Content $content): RedirectResponse
 {
     if ($request->has('_method') && $request->_method === 'put') {
-        \Log::info('Dados recebidos para atualização', $request->all());
-
         // Validação dos dados
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -83,12 +91,8 @@ public function update(Request $request, Content $content): RedirectResponse
             'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1048', // Validando o campo de imagem
         ]);
 
-        \Log::info('Dados validados', $validatedData);
-
         // Verificação e upload da imagem
         if ($request->hasFile('img')) {
-            \Log::info('Imagem recebida para upload');
-            
             // Deletando a imagem antiga, se houver
             if ($content->img) {
                 Storage::disk('public')->delete($content->img);
@@ -103,7 +107,7 @@ public function update(Request $request, Content $content): RedirectResponse
         $content->update($validatedData);
 
         // Redirecionando com uma mensagem de sucesso
-        return redirect()->route('contents.index')->with('success', 'Content updated successfully.');
+        return redirect()->route('home')->with('success', 'Content updated successfully.');
     }
 
     // Se não for um método PUT, redirecione de volta

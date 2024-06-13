@@ -102,7 +102,7 @@ export default function Index({ auth, categories }) {
 
     return (
         <AuthenticatedLayout user={auth.user}>
-            <header className="bg-white shadow">
+            <header className="bg-slate-900 shadow">
                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <h2 className="font-semibold text-xl text-white leading-tight">Categorias</h2>
                 </div>

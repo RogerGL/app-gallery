@@ -8,6 +8,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
+        _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         name: '',
         email: '',
         password: '',
@@ -33,7 +34,7 @@ export default function Register() {
             <form onSubmit={submit}>
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
-
+                    <input type="hidden" name="_token" value={csrf_token} />
                     <TextInput
                         id="name"
                         name="name"
