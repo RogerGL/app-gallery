@@ -2,9 +2,13 @@
 
 System with login validation and user levels for content creation -> images and their categories can be "events," dynamically creating a gallery of photos/images of the events.
 
-![CaseHTTP.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f9488f81-a44f-4503-acba-ef91cbac6759/9e547c17-f000-44f6-9d21-04ecd9f7a03b/CaseHTTP.png)
+
+<img width="709" alt="CaseHTTP" src="https://github.com/RogerGL/app-galery/assets/86247840/b49515a8-5191-4946-bb5f-1c8b1180290e">
+
+
 ----------------------------------------------------------------------------------
-![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/f9488f81-a44f-4503-acba-ef91cbac6759/c65bbd7f-7bd4-4dd7-b5c6-b4743ad3a373/Untitled.png)
+<img width="710" alt="caseDB" src="https://github.com/RogerGL/app-galery/assets/86247840/c7b2acd0-02eb-4785-8d1b-6d237e876410">
+
 ## Requisites
 
 - Docker;
