@@ -13,8 +13,8 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
       - DB_DATABASE=laravel
-      - DB_USERNAME=laravel
-      - DB_PASSWORD=secret
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
     depends_on:
       - db
     networks:
