@@ -18,9 +18,9 @@ export default function Authenticated({ user, header, children }: PropsWithChild
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-28">
                         <div className="flex">
-                            <div className="">
+                            <div className="shrink-0 flex items-center">
                                 <Link href="home">
-                                    <ApplicationLogo className="h-20 w-auto fill-current text-gray-800" />
+                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
                                 </Link>
                             </div>
 
