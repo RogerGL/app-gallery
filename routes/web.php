@@ -9,7 +9,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::redirect('/', '/home');
+Route::redirect('/', 'home');
 Route::get('/home', function () {
     return Inertia::render('Dashboard', [
         'canLogin' => Route::has('login'),
@@ -17,11 +17,6 @@ Route::get('/home', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
-
-
-Route::get('/home', function () {
-    return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('home');
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

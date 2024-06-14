@@ -88,7 +88,7 @@ public function update(Request $request, Content $content): RedirectResponse
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
-            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1048', // Validando o campo de imagem
+            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:1048', // Validando o campo de imagem
         ]);
 
         // Verificação e upload da imagem
