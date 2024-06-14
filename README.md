@@ -22,6 +22,7 @@ System with login validation and user levels for content creation -> images and 
 - Abble the images (`docker compose exec app php artisan storage:link`)
 - Run migrations (`docker compose exec app php artisan migrate`)
 - Copy `.env.example` file (`cp .env.example .env`);
+- Run command make:user (`docker compose exec app php artisan make:user`);
 - Run application (`npm run dev`);
 
 - Test it!  (http://localhost:8000/)
