@@ -9,5 +9,9 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
-    ],
+    ],server: {
+        hmr: {
+            host: 'localhost',
+        },
+  },
 });
